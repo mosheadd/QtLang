@@ -2,4 +2,7 @@
   <qresource prefix="vocals">
     <file>glasnyie.png</file>
   </qresource>
+  <qresource prefix="class">
+    <file>classification.png</file>
+  </qresource>
 </RCC>
