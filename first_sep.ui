@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1288</width>
+    <height>748</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>40</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>17</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>МФА</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>701</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <row>
+     <property name="text">
+      <string>Взрывные</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Сибилянты</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Нососвые</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Дрожащие</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Аппроксиманты</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Одноударные</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Фрикативные</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Латеральные фрикативные</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Латеральные аппроксиманты</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Латеральные одноударные</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>Губно-губные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Губно-зубные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Язычно-губные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Зубные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Альвеолярные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Палато-альвеолярные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Ретрофлексные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Палатальные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Альвео-палатные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Заднеязычные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Увулярные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Фарингальные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Глоттальные</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Эпилоглоттальные</string>
+     </property>
+    </column>
+    <item row="0" column="0">
+     <property name="text">
+      <string>p b</string>
+     </property>
+    </item>
+    <item row="0" column="1">
+     <property name="text">
+      <string>p̪ b̪</string>
+     </property>
+    </item>
+    <item row="0" column="2">
+     <property name="text">
+      <string>t̼ d̼</string>
+     </property>
+    </item>
+    <item row="0" column="3">
+     <property name="text">
+      <string>t d</string>
+     </property>
+    </item>
+    <item row="0" column="4">
+     <property name="text">
+      <string>t d</string>
+     </property>
+    </item>
+    <item row="0" column="5">
+     <property name="text">
+      <string>t d</string>
+     </property>
+    </item>
+    <item row="0" column="6">
+     <property name="text">
+      <string>ʈ ɖ</string>
+     </property>
+    </item>
+    <item row="0" column="7">
+     <property name="text">
+      <string>c ɟ</string>
+     </property>
+    </item>
+    <item row="0" column="8">
+     <property name="text">
+      <string>c ɟ</string>
+     </property>
+    </item>
+    <item row="0" column="9">
+     <property name="text">
+      <string>k g</string>
+     </property>
+    </item>
+    <item row="0" column="10">
+     <property name="text">
+      <string>q G</string>
+     </property>
+    </item>
+    <item row="0" column="12">
+     <property name="text">
+      <string>ʔ</string>
+     </property>
+    </item>
+    <item row="0" column="13">
+     <property name="text">
+      <string>ʡ</string>
+     </property>
+    </item>
+    <item row="1" column="3">
+     <property name="text">
+      <string>s z</string>
+     </property>
+    </item>
+    <item row="1" column="4">
+     <property name="text">
+      <string>s z</string>
+     </property>
+    </item>
+    <item row="1" column="5">
+     <property name="text">
+      <string>ʃ ʒ</string>
+     </property>
+    </item>
+    <item row="1" column="6">
+     <property name="text">
+      <string>ʂ ʐ</string>
+     </property>
+    </item>
+    <item row="1" column="7">
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item row="1" column="8">
+     <property name="text">
+      <string>ɕ ʑ</string>
+     </property>
+    </item>
+    <item row="2" column="0">
+     <property name="text">
+      <string>m̥ m</string>
+     </property>
+    </item>
+    <item row="2" column="1">
+     <property name="text">
+      <string>ɱ</string>
+     </property>
+    </item>
+    <item row="2" column="2">
+     <property name="text">
+      <string>n̼</string>
+     </property>
+    </item>
+    <item row="2" column="3">
+     <property name="text">
+      <string>n̥ n</string>
+     </property>
+    </item>
+    <item row="2" column="4">
+     <property name="text">
+      <string>n̥ n</string>
+     </property>
+    </item>
+    <item row="2" column="5">
+     <property name="text">
+      <string>n̥ n</string>
+     </property>
+    </item>
+    <item row="2" column="6">
+     <property name="text">
+      <string>ɳ̊ ɳ</string>
+     </property>
+    </item>
+    <item row="2" column="7">
+     <property name="text">
+      <string>ɲ̊ ɲ</string>
+     </property>
+    </item>
+    <item row="2" column="8">
+     <property name="text">
+      <string>ɲ̊ ɲ</string>
+     </property>
+    </item>
+    <item row="2" column="9">
+     <property name="text">
+      <string>ŋ̊ ŋ</string>
+     </property>
+    </item>
+    <item row="2" column="10">
+     <property name="text">
+      <string>N</string>
+     </property>
+    </item>
+    <item row="3" column="0">
+     <property name="text">
+      <string>ʙ̥ ʙ</string>
+     </property>
+    </item>
+    <item row="3" column="2">
+     <property name="text">
+      <string>r̼</string>
+     </property>
+    </item>
+    <item row="3" column="3">
+     <property name="text">
+      <string>r̥ r</string>
+     </property>
+    </item>
+    <item row="3" column="4">
+     <property name="text">
+      <string>r̥ r</string>
+     </property>
+    </item>
+    <item row="3" column="5">
+     <property name="text">
+      <string>r̥ r</string>
+     </property>
+    </item>
+    <item row="3" column="6">
+     <property name="text">
+      <string>ɽ͡r̥ ɽ͡r</string>
+     </property>
+    </item>
+    <item row="3" column="10">
+     <property name="text">
+      <string>ʀ̥ ʀ</string>
+     </property>
+    </item>
+    <item row="3" column="13">
+     <property name="text">
+      <string>ʜ ʢ</string>
+     </property>
+    </item>
+    <item row="4" column="1">
+     <property name="text">
+      <string>ʋ ʋ</string>
+     </property>
+    </item>
+    <item row="4" column="3">
+     <property name="text">
+      <string/>
+     </property>
+    </item>
+    <item row="4" column="4">
+     <property name="text">
+      <string>ɹ̥ ɹ</string>
+     </property>
+    </item>
+    <item row="4" column="5">
+     <property name="text">
+      <string>ɹ̥ ɹ</string>
+     </property>
+    </item>
+    <item row="4" column="6">
+     <property name="text">
+      <string>ɻ̊ ɻ</string>
+     </property>
+    </item>
+    <item row="4" column="7">
+     <property name="text">
+      <string>j̊ j</string>
+     </property>
+    </item>
+    <item row="4" column="8">
+     <property name="text">
+      <string>j̊ j</string>
+     </property>
+    </item>
+    <item row="4" column="9">
+     <property name="text">
+      <string>ɰ̊ ɰ</string>
+     </property>
+    </item>
+    <item row="4" column="12">
+     <property name="text">
+      <string>ʔ̞</string>
+     </property>
+    </item>
+    <item row="5" column="0">
+     <property name="text">
+      <string>ⱱ̟</string>
+     </property>
+    </item>
+    <item row="5" column="1">
+     <property name="text">
+      <string>ⱱ</string>
+     </property>
+    </item>
+    <item row="5" column="2">
+     <property name="text">
+      <string>ɾ̼</string>
+     </property>
+    </item>
+    <item row="5" column="3">
+     <property name="text">
+      <string>ɾ̥ ɾ</string>
+     </property>
+    </item>
+    <item row="5" column="4">
+     <property name="text">
+      <string>ɾ̥ ɾ</string>
+     </property>
+    </item>
+    <item row="5" column="5">
+     <property name="text">
+      <string>ɾ̥ ɾ</string>
+     </property>
+    </item>
+    <item row="5" column="6">
+     <property name="text">
+      <string>ɽ̊ ɽ</string>
+     </property>
+    </item>
+    <item row="5" column="10">
+     <property name="text">
+      <string>ɢ̆</string>
+     </property>
+    </item>
+    <item row="5" column="13">
+     <property name="text">
+      <string>ʡ̮</string>
+     </property>
+    </item>
+    <item row="6" column="0">
+     <property name="text">
+      <string>ɸ β</string>
+     </property>
+    </item>
+    <item row="6" column="1">
+     <property name="text">
+      <string>f v</string>
+     </property>
+    </item>
+    <item row="6" column="2">
+     <property name="text">
+      <string>θ̼ ð̼</string>
+     </property>
+    </item>
+    <item row="6" column="3">
+     <property name="text">
+      <string>θ ð</string>
+     </property>
+    </item>
+    <item row="6" column="4">
+     <property name="text">
+      <string>θ̠ ð̠</string>
+     </property>
+    </item>
+    <item row="6" column="5">
+     <property name="text">
+      <string>ɹ̠̊˔ ɹ̠</string>
+     </property>
+    </item>
+    <item row="6" column="7">
+     <property name="text">
+      <string>ç ʝ</string>
+     </property>
+    </item>
+    <item row="6" column="8">
+     <property name="text">
+      <string>ç ʝ</string>
+     </property>
+    </item>
+    <item row="6" column="9">
+     <property name="text">
+      <string>x ɣ</string>
+     </property>
+    </item>
+    <item row="6" column="10">
+     <property name="text">
+      <string>χ ʁ</string>
+     </property>
+    </item>
+    <item row="6" column="11">
+     <property name="text">
+      <string>ħ ʕ</string>
+     </property>
+    </item>
+    <item row="6" column="12">
+     <property name="text">
+      <string>h ɦ</string>
+     </property>
+    </item>
+    <item row="7" column="3">
+     <property name="text">
+      <string>ɬ ɮ</string>
+     </property>
+    </item>
+    <item row="7" column="4">
+     <property name="text">
+      <string>ɬ ɮ</string>
+     </property>
+    </item>
+    <item row="7" column="5">
+     <property name="text">
+      <string>ɬ ɮ</string>
+     </property>
+    </item>
+    <item row="7" column="6">
+     <property name="text">
+      <string>ɭ̊˔</string>
+     </property>
+    </item>
+    <item row="7" column="7">
+     <property name="text">
+      <string>ʎ̥˔ ʎ̝</string>
+     </property>
+    </item>
+    <item row="7" column="8">
+     <property name="text">
+      <string>ʎ̥˔ ʎ̝</string>
+     </property>
+    </item>
+    <item row="7" column="9">
+     <property name="text">
+      <string>ʟ̝̊ ʟ̝</string>
+     </property>
+    </item>
+    <item row="8" column="3">
+     <property name="text">
+      <string>l̥ l</string>
+     </property>
+    </item>
+    <item row="8" column="4">
+     <property name="text">
+      <string>l̥ l</string>
+     </property>
+    </item>
+    <item row="8" column="5">
+     <property name="text">
+      <string>l̥ l</string>
+     </property>
+    </item>
+    <item row="8" column="6">
+     <property name="text">
+      <string>ɭ̊ ɭ</string>
+     </property>
+    </item>
+    <item row="8" column="7">
+     <property name="text">
+      <string>ʎ̥ ʎ</string>
+     </property>
+    </item>
+    <item row="8" column="8">
+     <property name="text">
+      <string>ʎ̥ ʎ</string>
+     </property>
+    </item>
+    <item row="8" column="9">
+     <property name="text">
+      <string>ʟ̥ ʟ</string>
+     </property>
+    </item>
+    <item row="8" column="10">
+     <property name="text">
+      <string>ʟ̠</string>
+     </property>
+    </item>
+    <item row="9" column="3">
+     <property name="text">
+      <string>ɺ</string>
+     </property>
+    </item>
+    <item row="9" column="4">
+     <property name="text">
+      <string>ɺ</string>
+     </property>
+    </item>
+    <item row="9" column="5">
+     <property name="text">
+      <string>ɺ</string>
+     </property>
+    </item>
+    <item row="9" column="6">
+     <property name="text">
+      <string>ɺ̢</string>
+     </property>
+    </item>
+    <item row="9" column="7">
+     <property name="text">
+      <string>ʎ̮</string>
+     </property>
+    </item>
+    <item row="9" column="8">
+     <property name="text">
+      <string>ʎ̮</string>
+     </property>
+    </item>
+    <item row="9" column="9">
+     <property name="text">
+      <string>ʟ̆</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>0</y>
+      <width>1081</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QRadioButton" name="radioButton">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Фонетика</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_2">
+       <property name="text">
+        <string>Части речи</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_3">
+       <property name="text">
+        <string>Явления</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButton_4">
+       <property name="text">
+        <string>Классификация</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>420</y>
+      <width>491</width>
+      <height>311</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/vocals/glasnyie.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1288</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources>
+  <include location="resources/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>
