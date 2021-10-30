@@ -17,10 +17,12 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         super().__init__()
         self.setupUi(self)
         self.pushButton_2.clicked.connect(self.getTable)
+        self.pushButton_3.clicked.connect(self.addRow)
 
     def getTable(self):
         base_name = self.lineEdit.text()
         table_name = self.lineEdit_2.text()
+        self.label_4.setText(base_name)
         base_connection = sqlite3.connect("DataBases\\" + base_name + ".sqlite")
         cursor = base_connection.cursor()
         select_table = cursor.execute("SELECT * FROM " + table_name)
@@ -29,6 +31,10 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         print(len(columns_names))
         self.tableWidget.setColumnCount(len(columns_names))
         self.tableWidget.setHorizontalHeaderLabels(columns_names)
+
+    def addRow(self):
+        row_count = self.tableWidget.rowCount()
+        self.tableWidget.insertRow(row_count)
 
 
 if __name__ == '__main__':
