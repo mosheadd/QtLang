@@ -23,26 +23,29 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.tableWidget.itemChanged.connect(self.change_item)
         self.modified = {}
         self.titles = []
+        self.base_name = ""
+        self.table_name = ""
+        self.adding_row = False
 
     def getTable(self):
         if self.base_connection:
             self.base_connection.close()
-        base_name = self.lineEdit.text()
-        table_name = self.lineEdit_2.text()
-        if not base_name or not table_name:
+        self.base_name = self.lineEdit.text()
+        self.table_name = self.lineEdit_2.text()
+        if not self.base_name or not self.table_name:
             self.label_18.setText("Вы ничего не ввели в одном/двух полях")
             return -1
-        if not os.path.isfile("DataBases\\" + base_name + ".sqlite"):
+        if not os.path.isfile("DataBases\\" + self.base_name + ".sqlite"):
             self.label_18.setText("Базы данных с таким названием нет")
             return -1
-        self.base_connection = sqlite3.connect("DataBases\\" + base_name + ".sqlite")
+        self.base_connection = sqlite3.connect("DataBases\\" + self.base_name + ".sqlite")
         cursor = self.base_connection.cursor()
-        cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" + table_name + "'")
+        cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" + self.table_name + "'")
         if cursor.fetchone()[0] == 0:
             self.label_18.setText("Таблицы с таким названием нет")
             return -1
-        self.label_4.setText(base_name)
-        select_table = cursor.execute("SELECT * FROM " + table_name)
+        self.label_4.setText(self.base_name)
+        select_table = cursor.execute("SELECT * FROM " + self.table_name)
         self.tableWidget.setRowCount(0)
         columns_names = list(map(lambda x: x[0], cursor.description))
         self.tableWidget.setColumnCount(len(columns_names))
@@ -53,15 +56,35 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.titles = [description[0] for description in cursor.description]
 
     def addRow(self, column_count, row_cells):
+        self.adding_row = True
         row_count = self.tableWidget.rowCount()
         self.tableWidget.insertRow(row_count)
         for e in range(column_count):
             self.tableWidget.setItem(row_count, e, QTableWidgetItem(str(row_cells[e])))
+        self.adding_row = False
 
     def change_item(self, item):
         if self.titles:
-            self.modified[self.titles[item.column()] + ":" + str(item.row())] = item.text()
+            if self.adding_row:
+                self.modified["addRow"] = item.text()
+            else:
+                self.modified[self.titles[item.column()] + ":" + str(item.row())] = item.text()
             print(self.modified)
+
+    def save(self):
+        cursor = self.base_connection.cursor()
+        titles_str = " ("
+        for i in self.titles:
+            titles_str += i
+        titles_str += ") "
+        if self.modified:
+            for i, v in self.modified.items():
+                if i == "addRow":
+                    cursor.execute("INSERT INTO " + self.table_name + titles_str + "VALUES(" + v + ",'','')")
+                    self.base_connection.commit()
+                else:
+                    cursor.execute("UPDATE " + self.table_name + " SET " + i[:i.find(":")] + " = " + v + " WHERE id = "
+                                   + i[i.find(":") + 1:])
 
 
 sys._excepthook = sys.excepthook
