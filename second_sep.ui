@@ -467,29 +467,6 @@
      <string>Изменить данные</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_12">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>470</y>
-      <width>281</width>
-      <height>41</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>520</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Изменить</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
@@ -503,31 +480,44 @@
      <string>Найти</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QLabel" name="label_18">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>570</y>
-      <width>101</width>
+      <x>530</x>
+      <y>540</y>
+      <width>221</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Добавить строку</string>
+     <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>570</y>
-      <width>101</width>
-      <height>41</height>
+      <x>500</x>
+      <y>470</y>
+      <width>271</width>
+      <height>61</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Сохранить</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>Добавить строку</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="text">
+        <string>Сохранить</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
