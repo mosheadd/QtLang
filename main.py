@@ -19,7 +19,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.setupUi(self)
         self.base_connection = None
         self.pushButton_2.clicked.connect(self.getTable)
-        self.pushButton_3.clicked.connect(self.addRow)
+        self.pushButton_3.clicked.connect(lambda: self.addRow(1, [self.tableWidget.rowCount() + 1]))
 
     def getTable(self):
         if self.base_connection:
@@ -44,11 +44,14 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         columns_names = list(map(lambda x: x[0], cursor.description))
         self.tableWidget.setColumnCount(len(columns_names))
         self.tableWidget.setHorizontalHeaderLabels(columns_names)
+        for e in select_table:
+            self.addRow(len(columns_names), e)
 
-    def addRow(self):
+    def addRow(self, column_count, row_cells):
         row_count = self.tableWidget.rowCount()
         self.tableWidget.insertRow(row_count)
-        self.tableWidget.setItem(row_count, 0, QTableWidgetItem(str(row_count + 1)))
+        for e in range(column_count):
+            self.tableWidget.setItem(row_count, e, QTableWidgetItem(str(row_cells[e])))
 
 
 if __name__ == '__main__':
