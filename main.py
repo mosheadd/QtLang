@@ -67,6 +67,17 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.modified[columns_names[item.column()] + ":" + str(item.row())] = item.text()
 
 
+sys._excepthook = sys.excepthook
+
+
+def exception_hook(exctype, value, traceback):
+    sys._excepthook(exctype, value, traceback)
+    sys.exit(1)
+
+
+sys.excepthook = exception_hook
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = SecondSep()
