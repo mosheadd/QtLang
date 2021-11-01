@@ -20,6 +20,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.base_connection = None
         self.pushButton_2.clicked.connect(self.getTable)
         self.pushButton_3.clicked.connect(lambda: self.addRow(1, [self.tableWidget.rowCount() + 1]))
+        self.pushButton_4.clicked.connect(self.save)
         self.tableWidget.itemChanged.connect(self.change_item)
         self.modified = {}
         self.titles = []
@@ -72,19 +73,26 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             print(self.modified)
 
     def save(self):
-        cursor = self.base_connection.cursor()
-        titles_str = " ("
-        for i in self.titles:
-            titles_str += i
-        titles_str += ") "
         if self.modified:
-            for i, v in self.modified.items():
-                if i == "addRow":
-                    cursor.execute("INSERT INTO " + self.table_name + titles_str + "VALUES(" + v + ",'','')")
-                    self.base_connection.commit()
-                else:
-                    cursor.execute("UPDATE " + self.table_name + " SET " + i[:i.find(":")] + " = " + v + " WHERE id = "
-                                   + i[i.find(":") + 1:])
+            valid = QMessageBox.question(
+                self, 'Сохранение', "Вы уверены, что хотите сохранить изменения?",
+                QMessageBox.Yes, QMessageBox.No)
+            if valid == QMessageBox.Yes:
+                cursor = self.base_connection.cursor()
+                titles_str = " ("
+                for i in self.titles:
+                    titles_str += i
+                titles_str += ") "
+                for i, v in self.modified.items():
+                    if i == "addRow":
+                        cursor.execute("INSERT INTO " + self.table_name + titles_str + "VALUES(" + v + ",'','')")
+                        self.base_connection.commit()
+                    else:
+                        cursor.execute("UPDATE " + self.table_name + " SET " + i[:i.find(":")] + " = " + v
+                                        + " WHERE id = " + i[i.find(":") + 1:])
+                self.modified = {}
+        else:
+            QMessageBox.warning(self, 'Ошибка', "Изменений не обнаружено", QMessageBox.Ok)
 
 
 sys._excepthook = sys.excepthook
