@@ -69,8 +69,8 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             if self.adding_row:
                 self.modified["addRow"] = item.text()
             else:
-                self.modified[self.titles[item.column()] + ":" + str(item.row())] = item.text()
-            print(self.modified)
+                self.modified[self.titles[item.column()] + ":" + str(item.row() + 1)] = item.text()
+        # print(self.modified)
 
     def save(self):
         if self.modified:
@@ -80,16 +80,20 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             if valid == QMessageBox.Yes:
                 cursor = self.base_connection.cursor()
                 titles_str = " ("
-                for i in self.titles:
-                    titles_str += i
+                titles_str += ",".join(i for i in self.titles)
                 titles_str += ") "
                 for i, v in self.modified.items():
                     if i == "addRow":
+                        values = "(" + v + ","
+                        for title in range(len(self.titles) - 1):
+                            values += "'',"
+                        values += "'')"
                         cursor.execute("INSERT INTO " + self.table_name + titles_str + "VALUES(" + v + ",'','')")
                         self.base_connection.commit()
                     else:
-                        cursor.execute("UPDATE " + self.table_name + " SET " + i[:i.find(":")] + " = " + v
-                                        + " WHERE id = " + i[i.find(":") + 1:])
+                        cursor.execute("UPDATE " + self.table_name + " SET '" + i[:i.find(":")] +
+                                       "' = ? WHERE id = ?", (v, i[i.find(":") + 1:]))
+                        self.base_connection.commit()
                 self.modified = {}
         else:
             QMessageBox.warning(self, 'Ошибка', "Изменений не обнаружено", QMessageBox.Ok)
@@ -104,8 +108,6 @@ def exception_hook(exctype, value, traceback):
 
 
 sys.excepthook = exception_hook
-
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = SecondSep()
