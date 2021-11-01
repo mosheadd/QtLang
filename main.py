@@ -18,6 +18,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         super().__init__()
         self.setupUi(self)
         self.base_connection = None
+        self.pushButton.clicked.connect(self.deleteRow)
         self.pushButton_2.clicked.connect(self.getTable)
         self.pushButton_3.clicked.connect(lambda: self.addRow(1, [self.tableWidget.rowCount() + 1]))
         self.pushButton_4.clicked.connect(self.save)
@@ -27,6 +28,8 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.base_name = ""
         self.table_name = ""
         self.adding_row = False
+        self.deleting_row = False
+        self.new_table = False
 
     def getTable(self):
         if self.base_connection:
@@ -47,6 +50,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             return -1
         self.label_4.setText(self.base_name)
         select_table = cursor.execute("SELECT * FROM " + self.table_name)
+        self.new_table = True
         self.tableWidget.setRowCount(0)
         columns_names = list(map(lambda x: x[0], cursor.description))
         self.tableWidget.setColumnCount(len(columns_names))
@@ -54,25 +58,31 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         for e in select_table:
             self.tableWidget.itemChanged.connect(self.change_item)
             self.addRow(len(columns_names), e)
+        self.new_table = False
         self.titles = [description[0] for description in cursor.description]
 
     def addRow(self, column_count, row_cells):
         self.adding_row = True
         row_count = self.tableWidget.rowCount()
         self.tableWidget.insertRow(row_count)
+        self.adding_row = False
         for e in range(column_count):
             self.tableWidget.setItem(row_count, e, QTableWidgetItem(str(row_cells[e])))
-        self.adding_row = False
 
     def change_item(self, item):
-        if self.titles:
+        if self.titles and not self.new_table:
             if self.adding_row:
                 self.modified["addRow"] = item.text()
+            elif self.deleting_row:
+                self.modified["delRow"] = item.text()
             else:
                 self.modified[self.titles[item.column()] + ":" + str(item.row() + 1)] = item.text()
-        # print(self.modified)
+        print(self.modified)
 
     def save(self):
+        if self.base_connection is None:
+            QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
+            return -1
         if self.modified:
             valid = QMessageBox.question(
                 self, 'Сохранение', "Вы уверены, что хотите сохранить изменения?",
@@ -84,11 +94,15 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 titles_str += ") "
                 for i, v in self.modified.items():
                     if i == "addRow":
-                        values = "(" + v + ","
-                        for title in range(len(self.titles) - 1):
+                        values = "VALUES(" + v + ","
+                        for title in range(len(self.titles) - 2):
                             values += "'',"
                         values += "'')"
-                        cursor.execute("INSERT INTO " + self.table_name + titles_str + "VALUES(" + v + ",'','')")
+                        print("INSERT INTO " + self.table_name + titles_str + values)
+                        cursor.execute("INSERT INTO " + self.table_name + titles_str + values)
+                        self.base_connection.commit()
+                    elif i == "delRow":
+                        cursor.execute("DELETE FROM " + self.table_name + " WHERE id = ?", (v,))
                         self.base_connection.commit()
                     else:
                         cursor.execute("UPDATE " + self.table_name + " SET '" + i[:i.find(":")] +
@@ -97,6 +111,16 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self.modified = {}
         else:
             QMessageBox.warning(self, 'Ошибка', "Изменений не обнаружено", QMessageBox.Ok)
+            return -1
+
+    def deleteRow(self):
+        self.deleting_row = True
+        cursor = self.base_connection.cursor()
+        current_row = self.tableWidget.currentRow()
+        self.modified["delRow"] = self.tableWidget.item(current_row, 0).text()
+        self.tableWidget.removeRow(self.tableWidget.currentRow())
+        print(self.modified)
+        self.deleting_row = False
 
 
 sys._excepthook = sys.excepthook
