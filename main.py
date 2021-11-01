@@ -22,6 +22,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.pushButton_2.clicked.connect(self.getTable)
         self.pushButton_3.clicked.connect(lambda: self.addRow(1, [self.tableWidget.rowCount() + 1]))
         self.pushButton_4.clicked.connect(self.save)
+        self.pushButton_5.clicked.connect(self.sort_byId)
         self.tableWidget.itemChanged.connect(self.change_item)
         self.modified = {}
         self.titles = []
@@ -48,6 +49,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         if cursor.fetchone()[0] == 0:
             self.label_18.setText("Таблицы с таким названием нет")
             return -1
+        self.label_18.setText("")
         self.label_4.setText(self.base_name)
         select_table = cursor.execute("SELECT * FROM " + self.table_name)
         self.new_table = True
@@ -65,14 +67,14 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.adding_row = True
         row_count = self.tableWidget.rowCount()
         self.tableWidget.insertRow(row_count)
-        self.adding_row = False
         for e in range(column_count):
             self.tableWidget.setItem(row_count, e, QTableWidgetItem(str(row_cells[e])))
+        self.adding_row = False
 
     def change_item(self, item):
         if self.titles and not self.new_table:
             if self.adding_row:
-                self.modified["addRow"] = item.text()
+                self.modified["addRow" + item.text()] = item.text()
             elif self.deleting_row:
                 self.modified["delRow"] = item.text()
             else:
@@ -88,26 +90,25 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self, 'Сохранение', "Вы уверены, что хотите сохранить изменения?",
                 QMessageBox.Yes, QMessageBox.No)
             if valid == QMessageBox.Yes:
+                print(self.modified)
                 cursor = self.base_connection.cursor()
                 titles_str = " ("
                 titles_str += ",".join(i for i in self.titles)
                 titles_str += ") "
                 for i, v in self.modified.items():
-                    if i == "addRow":
+                    if i[:6] == "addRow":
                         values = "VALUES(" + v + ","
                         for title in range(len(self.titles) - 2):
                             values += "'',"
                         values += "'')"
                         print("INSERT INTO " + self.table_name + titles_str + values)
                         cursor.execute("INSERT INTO " + self.table_name + titles_str + values)
-                        self.base_connection.commit()
                     elif i == "delRow":
                         cursor.execute("DELETE FROM " + self.table_name + " WHERE id = ?", (v,))
-                        self.base_connection.commit()
                     else:
                         cursor.execute("UPDATE " + self.table_name + " SET '" + i[:i.find(":")] +
                                        "' = ? WHERE id = ?", (v, i[i.find(":") + 1:]))
-                        self.base_connection.commit()
+                    self.base_connection.commit()
                 self.modified = {}
         else:
             QMessageBox.warning(self, 'Ошибка', "Изменений не обнаружено", QMessageBox.Ok)
@@ -132,6 +133,11 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         else:
             QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
             return -1
+
+    def sort_byId(self):
+        for row in range(self.tableWidget.rowCount()):
+            self.modified["id:" + self.tableWidget.item(row, 0).text()] = str(row + 1)
+            self.tableWidget.setItem(row, 0, QTableWidgetItem(str(row + 1)))
 
 
 sys._excepthook = sys.excepthook
