@@ -114,13 +114,24 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             return -1
 
     def deleteRow(self):
-        self.deleting_row = True
-        cursor = self.base_connection.cursor()
-        current_row = self.tableWidget.currentRow()
-        self.modified["delRow"] = self.tableWidget.item(current_row, 0).text()
-        self.tableWidget.removeRow(self.tableWidget.currentRow())
-        print(self.modified)
-        self.deleting_row = False
+        if self.tableWidget.currentRow() == -1:
+            QMessageBox.warning(self, 'Ошибка', "Вы не выбрали строку", QMessageBox.Ok)
+            return -1
+        if self.titles:
+            deleting = QMessageBox.question(
+                self, 'Сохранение', "Вы уверены, что хотите удалить выбранную строку?",
+                QMessageBox.Yes, QMessageBox.No)
+            if deleting == QMessageBox.Yes:
+                self.deleting_row = True
+                cursor = self.base_connection.cursor()
+                current_row = self.tableWidget.currentRow()
+                self.modified["delRow"] = self.tableWidget.item(current_row, 0).text()
+                self.tableWidget.removeRow(self.tableWidget.currentRow())
+                # print(self.modified)
+                self.deleting_row = False
+        else:
+            QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
+            return -1
 
 
 sys._excepthook = sys.excepthook
