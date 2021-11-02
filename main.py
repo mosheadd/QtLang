@@ -23,6 +23,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.pushButton_3.clicked.connect(lambda: self.addRow(1, [self.tableWidget.rowCount() + 1]))
         self.pushButton_4.clicked.connect(self.save)
         self.pushButton_5.clicked.connect(self.sort_byId)
+        self.pushButton_7.clicked.connect(self.load_changes)
         self.tableWidget.itemChanged.connect(self.change_item)
         self.modified = {}
         self.titles = []
@@ -62,8 +63,13 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             self.addRow(len(columns_names), e)
         self.new_table = False
         self.titles = [description[0] for description in cursor.description]
+        for description in cursor.description[1:]:
+            self.comboBox_2.addItem(description[0])
 
     def addRow(self, column_count, row_cells):
+        if self.base_connection is None:
+            QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
+            return -1
         self.adding_row = True
         row_count = self.tableWidget.rowCount()
         self.tableWidget.insertRow(row_count)
@@ -79,7 +85,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self.modified["delRow"] = item.text()
             else:
                 self.modified[self.titles[item.column()] + ":" + str(item.row() + 1)] = item.text()
-        print(self.modified)
+        # print(self.modified)
 
     def save(self):
         if self.base_connection is None:
@@ -138,6 +144,15 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         for row in range(self.tableWidget.rowCount()):
             self.modified["id:" + self.tableWidget.item(row, 0).text()] = str(row + 1)
             self.tableWidget.setItem(row, 0, QTableWidgetItem(str(row + 1)))
+
+    def load_changes(self):
+        if self.base_connection is None:
+            QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
+            return -1
+        cursor = self.base_connection.cursor()
+        select_changes = cursor.execute("SELECT id FROM Changes")
+        for change in select_changes:
+            self.comboBox.addItem(str(change[0]))
 
 
 sys._excepthook = sys.excepthook
