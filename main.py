@@ -7,6 +7,15 @@ import os
 from PyQt5.QtWidgets import QMainWindow, QRadioButton, QTableWidget, QTableWidgetItem, QLabel, QApplication, QMessageBox
 
 
+class Language:
+    def __init__(self, name, roots, prefixes, suffixes, endings):
+        self.name = name
+        self.roots = roots
+        self.prefixes = prefixes
+        self.suffixes = suffixes
+        self.endings = endings
+
+
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
     def __init__(self):
         super().__init__()
@@ -65,6 +74,8 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             self.addRow(len(columns_names), e)
         self.new_table = False
         self.titles = [description[0] for description in cursor.description]
+        if self.base_name not in languages:
+            languages.append(self.base_name)
 
     def addRow(self, column_count, row_cells):
         if self.base_connection is None:
@@ -185,6 +196,7 @@ def exception_hook(exctype, value, traceback):
     sys.exit(1)
 
 
+languages = []
 sys.excepthook = exception_hook
 if __name__ == '__main__':
     app = QApplication(sys.argv)
