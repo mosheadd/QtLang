@@ -25,6 +25,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.pushButton_5.clicked.connect(self.sort_byId)
         self.pushButton_6.clicked.connect(self.unload_table)
         self.pushButton_7.clicked.connect(self.load_changes)
+        self.pushButton_8.clicked.connect(self.quit)
         self.tableWidget.itemChanged.connect(self.change_item)
         self.modified = {}
         self.titles = []
@@ -84,7 +85,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self.modified["delRow"] = item.text()
             else:
                 self.modified[self.titles[item.column()] + ":" + str(item.row() + 1)] = item.text()
-        print(self.modified)
+        # print(self.modified)
 
     def save(self):
         if self.base_connection is None:
@@ -160,10 +161,20 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.tableWidget.clear()
         self.tableWidget.setRowCount(0)
         self.tableWidget.setColumnCount(0)
+        self.base_connection.close()
         self.base_connection = None
         self.table_name = ""
         self.base_name = ""
 
+    def quit(self):
+        does_quit = QMessageBox.question(
+            self, 'Сохранение', "Вы уверены, что хотите выйти?",
+            QMessageBox.Yes, QMessageBox.No)
+        if does_quit == QMessageBox.Yes:
+            if self.base_connection:
+                self.base_connection.close()
+                self.base_connection = None
+            sys.exit(app.exec())
 
 
 sys._excepthook = sys.excepthook
