@@ -8,12 +8,23 @@ from PyQt5.QtWidgets import QMainWindow, QRadioButton, QTableWidget, QTableWidge
 
 
 class Language:
-    def __init__(self, name, roots, prefixes, suffixes, endings):
+    def __init__(self, name):
         self.name = name
-        self.roots = roots
-        self.prefixes = prefixes
-        self.suffixes = suffixes
-        self.endings = endings
+        self.roots = []
+        self.prefixes = []
+        self.suffixes = []
+        self.endings = []
+
+    def addMorpheme(self, _type, morpheme):
+        if _type == "root":
+            self.roots.append(morpheme)
+        if _type == "prefix":
+            self.prefixes.append(morpheme)
+        if _type == "suffix":
+            self.suffixes.append(morpheme)
+        if _type == "ending":
+            self.endings.append(morpheme)
+
 
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
@@ -74,8 +85,12 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             self.addRow(len(columns_names), e)
         self.new_table = False
         self.titles = [description[0] for description in cursor.description]
-        if self.base_name not in languages:
-            languages.append(self.base_name)
+        if Language(self.base_name) not in languages:
+            languages.append(Language(self.base_name))
+        select_morphemes = cursor.execute("SELECT body, type FROM Morphemes")
+        for morpheme in select_morphemes:
+            languages[-1].addMorpheme(morpheme[0], morpheme[1])
+
 
     def addRow(self, column_count, row_cells):
         if self.base_connection is None:
