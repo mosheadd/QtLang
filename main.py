@@ -126,7 +126,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             return -1
         if self.titles:
             deleting = QMessageBox.question(
-                self, 'Сохранение', "Вы уверены, что хотите удалить выбранную строку?",
+                self, 'Удаление', "Вы уверены, что хотите удалить выбранную строку?",
                 QMessageBox.Yes, QMessageBox.No)
             if deleting == QMessageBox.Yes:
                 self.deleting_row = True
@@ -168,7 +168,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
 
     def quit(self):
         does_quit = QMessageBox.question(
-            self, 'Сохранение', "Вы уверены, что хотите выйти?",
+            self, 'Выход', "Вы уверены, что хотите выйти?",
             QMessageBox.Yes, QMessageBox.No)
         if does_quit == QMessageBox.Yes:
             if self.base_connection:
