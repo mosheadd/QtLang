@@ -9,7 +9,8 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QTableWidget, QTableWidgetItem
 
 
 class Change:
-    def __init__(self, body, period):
+    def __init__(self, uid, body, period):
+        self.uid = uid
         self.body = body
         self.period = period
 
@@ -34,16 +35,30 @@ class Language:
             self.endings.append(morpheme)
 
     def add_change(self, change):
-        self.changes.append(change[0], change[1])
+        self.changes.append(Change(change[0], change[1], change[2]))
 
 
 class Algorithm(algrthm.Ui_Form, QWidget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.pushButton_7.clicked.connect(self.load_changes)
 
-    # def load_changes(self):
-
+    def load_changes(self):
+        name = self.lineEdit.text()
+        is_there = False
+        if not name:
+            QMessageBox.warning(self, 'Ошибка', "Вы не ввели название языка.", QMessageBox.Ok)
+            return -1
+        for lang in languages:
+            if name == lang.name:
+                is_there = True
+                for chng in lang.changes:
+                    self.comboBox.addItem(str(chng.uid))
+                break
+        if not is_there:
+            QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
+            return -1
 
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
@@ -236,7 +251,6 @@ def exception_hook(exctype, value, traceback):
     sys.exit(1)
 
 
-current_language = ""
 languages = []
 sys.excepthook = exception_hook
 if __name__ == '__main__':
