@@ -1,10 +1,17 @@
 import sys
 import fs
 import ss
+import algrthm
 import sqlite3
 import os
 
-from PyQt5.QtWidgets import QMainWindow, QRadioButton, QTableWidget, QTableWidgetItem, QLabel, QApplication, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QLabel, QApplication, QMessageBox
+
+
+class Change:
+    def __init__(self, body, period):
+        self.body = body
+        self.period = period
 
 
 class Language:
@@ -14,6 +21,7 @@ class Language:
         self.prefixes = []
         self.suffixes = []
         self.endings = []
+        self.changes = []
 
     def addMorpheme(self, _type, morpheme):
         if _type == "root":
@@ -24,6 +32,17 @@ class Language:
             self.suffixes.append(morpheme)
         if _type == "ending":
             self.endings.append(morpheme)
+
+    def add_change(self, change):
+        self.changes.append(change[0], change[1])
+
+
+class Algorithm(algrthm.Ui_Form, QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+    # def load_changes(self):
 
 
 
@@ -44,7 +63,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.pushButton_4.clicked.connect(self.save)
         self.pushButton_5.clicked.connect(self.sort_byId)
         self.pushButton_6.clicked.connect(self.unload_table)
-        self.pushButton_7.clicked.connect(self.load_changes)
+        self.pushButton_7.clicked.connect(self.show_alg)
         self.pushButton_8.clicked.connect(self.quit)
         self.tableWidget.itemChanged.connect(self.change_item)
         self.modified = {}
@@ -54,6 +73,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.adding_row = False
         self.deleting_row = False
         self.new_table = False
+        self.algorithm = None
 
     def getTable(self):
         if self.base_connection:
@@ -202,6 +222,11 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self.base_connection = None
             sys.exit(app.exec())
 
+    def show_alg(self):
+        if not self.algorithm:
+            self.algorithm = Algorithm()
+        self.algorithm.show()
+
 
 sys._excepthook = sys.excepthook
 
@@ -211,12 +236,11 @@ def exception_hook(exctype, value, traceback):
     sys.exit(1)
 
 
+current_language = ""
 languages = []
 sys.excepthook = exception_hook
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = SecondSep()
-    ex2 = FirstSep()
-    ex2.show()
     ex.show()
     sys.exit(app.exec())
