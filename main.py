@@ -25,17 +25,18 @@ class Language:
         self.changes = []
 
     def addMorpheme(self, _type, morpheme):
-        if _type == "root":
+        if _type == "root" and morpheme not in self.roots:
             self.roots.append(morpheme)
-        if _type == "prefix":
+        if _type == "prefix" and morpheme not in self.prefixes:
             self.prefixes.append(morpheme)
-        if _type == "suffix":
+        if _type == "suffix" and morpheme not in self.suffixes:
             self.suffixes.append(morpheme)
-        if _type == "ending":
+        if _type == "ending" and morpheme not in self.endings:
             self.endings.append(morpheme)
 
     def add_change(self, change):
-        self.changes.append(Change(change[0], change[1], change[2]))
+        if Change(change[0], change[1], change[2]) not in self.changes:
+            self.changes.append(Change(change[0], change[1], change[2]))
 
 
 class Algorithm(algrthm.Ui_Form, QWidget):
@@ -54,6 +55,7 @@ class Algorithm(algrthm.Ui_Form, QWidget):
             if name == lang.name:
                 is_there = True
                 for chng in lang.changes:
+                    print(chng.uid)
                     self.comboBox.addItem(str(chng.uid))
                 break
         if not is_there:
@@ -125,6 +127,9 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         select_morphemes = cursor.execute("SELECT body, type FROM Morphemes")
         for morpheme in select_morphemes:
             languages[-1].addMorpheme(morpheme[0], morpheme[1])
+        select_changes = cursor.execute("SELECT * FROM Changes")
+        for change in select_changes:
+            languages[-1].add_change(change)
 
 
     def addRow(self, column_count, row_cells):
