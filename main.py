@@ -38,12 +38,34 @@ class Language:
         if Change(change[0], change[1], change[2]) not in self.changes:
             self.changes.append(Change(change[0], change[1], change[2]))
 
+    def word_alg(self, word):
+        ending = ""
+        suffix = ""
+        suffix = ""
+        morphemes = []
+        for ltr in word[::-1]:
+            ending += ltr
+            if ending in self.endings:
+                morphemes.append(ending)
+                break
+        for ltr in word[::-1]:
+            ending += ltr
+            if ending in self.endings:
+                morphemes.append(ending)
+                break
+        if ending == word:
+            ending = "Нулевое"
+        for ltr in word[::-1 - (len(word) - len(ending) - 1)]:
+            root += ltr
+
 
 class Algorithm(algrthm.Ui_Form, QWidget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.pushButton_7.clicked.connect(self.load_changes)
+        self.pushButton_9.clicked.connect(self.apply)
+        self.language = None
 
     def load_changes(self):
         name = self.lineEdit.text()
@@ -57,10 +79,14 @@ class Algorithm(algrthm.Ui_Form, QWidget):
                 for chng in lang.changes:
                     print(chng.uid)
                     self.comboBox.addItem(str(chng.uid))
+                    self.language = lang
                 break
         if not is_there:
             QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
             return -1
+
+    def apply(self):
+        self.language.word_alg(self.lineEdit_3.text())
 
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
