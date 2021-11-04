@@ -24,7 +24,7 @@ class Language:
         self.endings = []
         self.changes = []
 
-    def addMorpheme(self, _type, morpheme):
+    def addMorpheme(self, morpheme, _type):
         if _type == "root" and morpheme not in self.roots:
             self.roots.append(morpheme)
         if _type == "prefix" and morpheme not in self.prefixes:
@@ -41,22 +41,47 @@ class Language:
     def word_alg(self, word):
         ending = ""
         suffix = ""
-        suffix = ""
+        root = ""
+        prefix = ""
         morphemes = []
         for ltr in word[::-1]:
             ending += ltr
-            if ending in self.endings:
-                morphemes.append(ending)
+            # print(ending)
+            if ending[::-1] in self.endings:
+                ending = ending[::-1]
                 break
-        for ltr in word[::-1]:
-            ending += ltr
-            if ending in self.endings:
-                morphemes.append(ending)
-                break
-        if ending == word:
+        if ending == word[::-1]:
             ending = "Нулевое"
-        for ltr in word[::-1 - (len(word) - len(ending) - 1)]:
+            end_gap = 0
+        else:
+            end_gap = len(ending)
+        print(ending, end_gap, word[-1 - end_gap::-1])
+        for ltr in word[-1 - end_gap::-1]:
+            suffix += ltr
+            print(suffix)
+            if suffix[::-1] in self.suffixes:
+                suffix = suffix[::-1]
+                break
+        if suffix == word[::-1 - end_gap]:
+            suffix = "Нет"
+            suf_gap = 0
+        else:
+            suf_gap = len(ending) + len(suffix)
+        for ltr in word[-1 - suf_gap::-1]:
             root += ltr
+            if root[::-1] in self.roots:
+                root = root[::-1]
+                break
+        root_gap = len(ending) + len(suffix) + len(root)
+        for ltr in word[-1 - root_gap::-1]:
+            prefix += ltr
+            if prefix[::-1] in self.prefixes:
+                prefix = prefix[::-1]
+                break
+        if prefix == "":
+            prefix = "Нет"
+        return [root, prefix, suffix, ending]
+        # print(prefix, root, suffix, ending)
 
 
 class Algorithm(algrthm.Ui_Form, QWidget):
@@ -79,14 +104,29 @@ class Algorithm(algrthm.Ui_Form, QWidget):
                 for chng in lang.changes:
                     print(chng.uid)
                     self.comboBox.addItem(str(chng.uid))
-                    self.language = lang
+                self.language = lang
                 break
         if not is_there:
             QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
             return -1
 
     def apply(self):
-        self.language.word_alg(self.lineEdit_3.text())
+        name = self.lineEdit.text()
+        if not self.language:
+            is_there = False
+            for lang in languages:
+                if name == lang.name:
+                    is_there = True
+                    self.language = lang
+                    break
+            if not is_there:
+                QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
+                return -1
+        morphemes = self.language.word_alg(self.lineEdit_3.text())
+        self.lineEdit_4.setText(morphemes[0])
+        self.lineEdit_5.setText(morphemes[1])
+        self.lineEdit_6.setText(morphemes[3])
+        self.lineEdit_7.setText(morphemes[2])
 
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):

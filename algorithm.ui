@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>369</width>
-    <height>340</height>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -145,7 +145,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Часть речи:</string>
+          <string>Суффикс:</string>
          </property>
         </widget>
        </item>

@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(369, 340)
+        Form.resize(369, 419)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -140,7 +140,7 @@ class Ui_Form(object):
         self.label_7.setText(_translate("Form", "Корень:"))
         self.label_8.setText(_translate("Form", "Приставка:"))
         self.label_9.setText(_translate("Form", "Окончание:"))
-        self.label_10.setText(_translate("Form", "Часть речи:"))
+        self.label_10.setText(_translate("Form", "Суффикс:"))
         self.label_11.setText(_translate("Form", "Слово до изменения:"))
         self.pushButton_9.setText(_translate("Form", "Применить"))
         self.pushButton_7.setText(_translate("Form", "Загрузить изменения"))
