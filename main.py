@@ -83,11 +83,13 @@ class Language:
             changed_prefix = ""
         changed_word = ""
         for chng in self.changes:
-            if chng.uid == cb_id:
+            if str(chng.uid) == cb_id:
                 all_change = chng.body.split(" ")
                 if all_change[0] == "root":
-                    if root == all_change[4]:
-                        changed_word += changed_prefix + all_change[4] + changed_suffix + changed_ending
+                    if '"' + root + '"' == all_change[4]:
+                        changed_word = changed_prefix + all_change[1][1:len(all_change[1]) - 1]\
+                                       + changed_suffix + changed_ending
+                        print(12)
         return [root, prefix, suffix, ending, changed_word]
 
 
@@ -109,7 +111,6 @@ class Algorithm(algrthm.Ui_Form, QWidget):
             if name == lang.name:
                 is_there = True
                 for chng in lang.changes:
-                    print(chng.uid)
                     self.comboBox.addItem(str(chng.uid))
                 self.language = lang
                 break
@@ -129,11 +130,13 @@ class Algorithm(algrthm.Ui_Form, QWidget):
             if not is_there:
                 QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
                 return -1
+        print(self.comboBox.currentText())
         morphemes = self.language.word_alg(self.lineEdit_3.text(), self.comboBox.currentText())
         self.lineEdit_4.setText(morphemes[0])
         self.lineEdit_5.setText(morphemes[1])
         self.lineEdit_6.setText(morphemes[3])
         self.lineEdit_7.setText(morphemes[2])
+        self.lineEdit_8.setText(morphemes[4])
 
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
