@@ -46,7 +46,6 @@ class Language:
         morphemes = []
         for ltr in word[::-1]:
             ending += ltr
-            # print(ending)
             if ending[::-1] in self.endings:
                 ending = ending[::-1]
                 break
@@ -55,10 +54,8 @@ class Language:
             end_gap = 0
         else:
             end_gap = len(ending)
-        print(ending, end_gap, word[-1 - end_gap::-1])
         for ltr in word[-1 - end_gap::-1]:
             suffix += ltr
-            print(suffix)
             if suffix[::-1] in self.suffixes:
                 suffix = suffix[::-1]
                 break
@@ -81,7 +78,6 @@ class Language:
         if prefix == "":
             prefix = "Нет"
         return [root, prefix, suffix, ending]
-        # print(prefix, root, suffix, ending)
 
 
 class Algorithm(algrthm.Ui_Form, QWidget):
@@ -217,7 +213,6 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self.modified["delRow"] = item.text()
             else:
                 self.modified[self.titles[item.column()] + ":" + str(item.row() + 1)] = item.text()
-        # print(self.modified)
 
     def save(self):
         if self.base_connection is None:
