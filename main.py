@@ -38,7 +38,8 @@ class Language:
         if Change(change[0], change[1], change[2]) not in self.changes:
             self.changes.append(Change(change[0], change[1], change[2]))
 
-    def word_alg(self, word):
+
+    def word_alg(self, word, cb_id):
         ending = ""
         suffix = ""
         root = ""
@@ -51,6 +52,7 @@ class Language:
                 break
         if ending == word[::-1]:
             ending = "Нулевое"
+            changed_ending = ""
             end_gap = 0
         else:
             end_gap = len(ending)
@@ -61,6 +63,7 @@ class Language:
                 break
         if suffix == word[::-1 - end_gap]:
             suffix = "Нет"
+            changed_suffix = ""
             suf_gap = 0
         else:
             suf_gap = len(ending) + len(suffix)
@@ -77,7 +80,15 @@ class Language:
                 break
         if prefix == "":
             prefix = "Нет"
-        return [root, prefix, suffix, ending]
+            changed_prefix = ""
+        changed_word = ""
+        for chng in self.changes:
+            if chng.uid == cb_id:
+                all_change = chng.body.split(" ")
+                if all_change[0] == "root":
+                    if root == all_change[4]:
+                        changed_word += changed_prefix + all_change[4] + changed_suffix + changed_ending
+        return [root, prefix, suffix, ending, changed_word]
 
 
 class Algorithm(algrthm.Ui_Form, QWidget):
@@ -118,7 +129,7 @@ class Algorithm(algrthm.Ui_Form, QWidget):
             if not is_there:
                 QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
                 return -1
-        morphemes = self.language.word_alg(self.lineEdit_3.text())
+        morphemes = self.language.word_alg(self.lineEdit_3.text(), self.comboBox.currentText())
         self.lineEdit_4.setText(morphemes[0])
         self.lineEdit_5.setText(morphemes[1])
         self.lineEdit_6.setText(morphemes[3])
