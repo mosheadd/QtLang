@@ -15,25 +15,30 @@ class Change:
         self.period = period
 
 
+class Morpheme:
+    def __init__(self, body, _type, part):
+        self.body = body
+        self._type = _type
+        self.part = part
+
+
+
 class Language:
     def __init__(self, name):
         self.name = name
         self.roots = []
+        self.morphemes = []
+        self.morphemes_bodies = []
         self.prefixes = []
         self.suffixes = []
         self.endings = []
         self.changes = []
         self.alphabet = {}
 
-    def addMorpheme(self, morpheme, _type):
-        if _type == "root" and morpheme not in self.roots:
-            self.roots.append(morpheme)
-        if _type == "prefix" and morpheme not in self.prefixes:
-            self.prefixes.append(morpheme)
-        if _type == "suffix" and morpheme not in self.suffixes:
-            self.suffixes.append(morpheme)
-        if _type == "ending" and morpheme not in self.endings:
-            self.endings.append(morpheme)
+    def addMorpheme(self, morpheme, _type, part):
+        if Morpheme(morpheme, _type, part) not in self.morphemes:
+            self.morphemes.append(Morpheme(morpheme, _type, part))
+            self.morphemes_bodies.append(morpheme)
 
     def add_change(self, change):
         if Change(change[0], change[1], change[2]) not in self.changes:
@@ -48,9 +53,10 @@ class Language:
         suffix = ""
         root = ""
         prefix = ""
+        part = ""
         for ltr in word[::-1]:
             ending += ltr
-            if ending[::-1] in self.endings:
+            if ending[::-1] in self.morphemes_bodies:
                 ending = ending[::-1]
                 break
         if ending == word[::-1]:
@@ -58,35 +64,41 @@ class Language:
             end_gap = 0
         else:
             end_gap = len(ending)
+            part = self.endings[ending]
         for ltr in word[-1 - end_gap::-1]:
             suffix += ltr
-            if suffix[::-1] in self.suffixes:
+            if suffix[::-1] in self.suffixes.keys():
                 suffix = suffix[::-1]
                 break
-        if suffix == word[::-1 - end_gap]:
+        if suffix == word[-1 - end_gap::-1]:
             suffix = "Нет"
             suf_gap = 0
         else:
             suf_gap = len(ending) + len(suffix)
+            if not part or part == "all":
+                part = self.suffixes[suffix]
         for ltr in word[-1 - suf_gap::-1]:
             root += ltr
-            if root[::-1] in self.roots:
+            if root[::-1] in self.roots.keys():
                 root = root[::-1]
                 break
         root_gap = len(ending) + len(suffix) + len(root)
         for ltr in word[-1 - root_gap::-1]:
             prefix += ltr
-            if prefix[::-1] in self.prefixes:
+            if prefix[::-1] in self.prefixes.keys():
                 prefix = prefix[::-1]
                 break
         if prefix == "":
             prefix = "Нет"
+        else:
+            if not part or part == "all":
+                part = self.prefixes[prefix]
         ipa_word = "["
         for letter in word.lower():
             for k, v in self.alphabet.items():
                 if k == letter:
                     ipa_word += v
-        return [root, prefix, suffix, ending, ipa_word + "]"]
+        return [root, prefix, suffix, ending, ipa_word + "]", part]
 
 
 class Algorithm(algrthm.Ui_Form, QWidget):
@@ -103,13 +115,9 @@ class Algorithm(algrthm.Ui_Form, QWidget):
         if not name:
             QMessageBox.warning(self, 'Ошибка', "Вы не ввели название языка.", QMessageBox.Ok)
             return -1
-        for lang in languages:
-            if name == lang.name:
-                is_there = True
-                for chng in lang.changes:
-                    self.comboBox.addItem(str(chng.uid))
-                self.language = lang
-                break
+        connection = sqlite3.connect("DataBases\\" + name + ".sqlite")
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO Words(id,word,partofspeech,ipa,root,prefix,suffix,ending) VALUES (?,?,?,?,?,?,?,?)")
         if not is_there:
             QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
             return -1
@@ -132,6 +140,7 @@ class Algorithm(algrthm.Ui_Form, QWidget):
         self.lineEdit_6.setText(morphemes[3])
         self.lineEdit_7.setText(morphemes[2])
         self.lineEdit_2.setText(morphemes[4])
+        self.lineEdit_8.setText(morphemes[5])
 
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
@@ -195,9 +204,9 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.titles = [description[0] for description in cursor.description]
         if Language(self.base_name) not in languages:
             languages.append(Language(self.base_name))
-        select_morphemes = cursor.execute("SELECT body, type FROM Morphemes")
+        select_morphemes = cursor.execute("SELECT body, type, part FROM Morphemes")
         for morpheme in select_morphemes:
-            languages[-1].addMorpheme(morpheme[0], morpheme[1])
+            languages[-1].addMorpheme(morpheme[0], morpheme[1], morpheme[2])
         select_alphabet = cursor.execute("SELECT * FROM Alphabet")
         for ltr in select_alphabet:
             languages[-1].add_letter(ltr)
@@ -244,7 +253,6 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                         for title in range(len(self.titles) - 2):
                             values += "'',"
                         values += "'')"
-                        print("INSERT INTO " + self.table_name + titles_str + values)
                         cursor.execute("INSERT INTO " + self.table_name + titles_str + values)
                     elif i == "delRow":
                         cursor.execute("DELETE FROM " + self.table_name + " WHERE id = ?", (v,))

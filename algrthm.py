@@ -151,4 +151,4 @@ class Ui_Form(object):
         self.label_11.setText(_translate("Form", "МФА:"))
         self.label_2.setText(_translate("Form", "Часть речи:"))
         self.pushButton_9.setText(_translate("Form", "Применить"))
-        self.pushButton_7.setText(_translate("Form", "Загрузить изменения"))
+        self.pushButton_7.setText(_translate("Form", "Загрузить в язык"))
