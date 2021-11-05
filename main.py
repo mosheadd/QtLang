@@ -8,9 +8,6 @@ import os
 from PyQt5.QtWidgets import QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QLabel, QApplication, QMessageBox
 
 
-ifa = {}
-
-
 class Change:
     def __init__(self, uid, body, period):
         self.uid = uid
@@ -26,6 +23,7 @@ class Language:
         self.suffixes = []
         self.endings = []
         self.changes = []
+        self.alphabet = {}
 
     def addMorpheme(self, morpheme, _type):
         if _type == "root" and morpheme not in self.roots:
@@ -41,13 +39,15 @@ class Language:
         if Change(change[0], change[1], change[2]) not in self.changes:
             self.changes.append(Change(change[0], change[1], change[2]))
 
+    def add_letter(self, letter):
+        if letter[1] not in self.alphabet.keys():
+            self.alphabet[letter[1]] = letter[2]
 
-    def word_alg(self, word, cb_id):
+    def word_alg(self, word):
         ending = ""
         suffix = ""
         root = ""
         prefix = ""
-        morphemes = []
         for ltr in word[::-1]:
             ending += ltr
             if ending[::-1] in self.endings:
@@ -55,7 +55,6 @@ class Language:
                 break
         if ending == word[::-1]:
             ending = "Нулевое"
-            changed_ending = ""
             end_gap = 0
         else:
             end_gap = len(ending)
@@ -66,7 +65,6 @@ class Language:
                 break
         if suffix == word[::-1 - end_gap]:
             suffix = "Нет"
-            changed_suffix = ""
             suf_gap = 0
         else:
             suf_gap = len(ending) + len(suffix)
@@ -83,17 +81,12 @@ class Language:
                 break
         if prefix == "":
             prefix = "Нет"
-            changed_prefix = ""
-        changed_word = ""
-        for chng in self.changes:
-            if str(chng.uid) == cb_id:
-                all_change = chng.body.split(" ")
-                if all_change[0] == "root":
-                    if '"' + root + '"' == all_change[4]:
-                        changed_word = changed_prefix + all_change[1][1:len(all_change[1]) - 1]\
-                                       + changed_suffix + changed_ending
-                        print(12)
-        return [root, prefix, suffix, ending, changed_word]
+        ipa_word = "["
+        for letter in word.lower():
+            for k, v in self.alphabet.items():
+                if k == letter:
+                    ipa_word += v
+        return [root, prefix, suffix, ending, ipa_word + "]"]
 
 
 class Algorithm(algrthm.Ui_Form, QWidget):
@@ -133,13 +126,12 @@ class Algorithm(algrthm.Ui_Form, QWidget):
             if not is_there:
                 QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
                 return -1
-        print(self.comboBox.currentText())
-        morphemes = self.language.word_alg(self.lineEdit_3.text(), self.comboBox.currentText())
+        morphemes = self.language.word_alg(self.lineEdit_3.text())
         self.lineEdit_4.setText(morphemes[0])
         self.lineEdit_5.setText(morphemes[1])
         self.lineEdit_6.setText(morphemes[3])
         self.lineEdit_7.setText(morphemes[2])
-        self.lineEdit_8.setText(morphemes[4])
+        self.lineEdit_2.setText(morphemes[4])
 
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
@@ -206,9 +198,10 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         select_morphemes = cursor.execute("SELECT body, type FROM Morphemes")
         for morpheme in select_morphemes:
             languages[-1].addMorpheme(morpheme[0], morpheme[1])
-        select_changes = cursor.execute("SELECT * FROM Changes")
-        for change in select_changes:
-            languages[-1].add_change(change)
+        select_alphabet = cursor.execute("SELECT * FROM Alphabet")
+        for ltr in select_alphabet:
+            languages[-1].add_letter(ltr)
+
 
 
     def addRow(self, column_count, row_cells):
