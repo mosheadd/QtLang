@@ -38,7 +38,6 @@ class Language:
     def addMorpheme(self, morpheme, _type, part):
         if Morpheme(morpheme, _type, part) not in self.morphemes:
             self.morphemes.append(Morpheme(morpheme, _type, part))
-            self.morphemes_bodies.append(morpheme)
 
     def add_change(self, change):
         if Change(change[0], change[1], change[2]) not in self.changes:
@@ -49,15 +48,21 @@ class Language:
             self.alphabet[letter[1]] = letter[2]
 
     def word_alg(self, word):
+        endings = []
         ending = ""
         suffix = ""
         root = ""
         prefix = ""
         part = ""
+        do_break = False
         for ltr in word[::-1]:
             ending += ltr
-            if ending[::-1] in self.morphemes_bodies:
-                ending = ending[::-1]
+            for morpheme in self.morphemes:
+                if ending[::-1] == morpheme.body and morpheme._type == "ending":
+                    ending = ending[::-1]
+                    do_break = True
+                    break
+            if do_break:
                 break
         if ending == word[::-1]:
             ending = "Нулевое"
@@ -162,6 +167,14 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.pushButton_6.clicked.connect(self.unload_table)
         self.pushButton_7.clicked.connect(self.show_alg)
         self.pushButton_8.clicked.connect(self.quit)
+        self.action.triggered.connect(self.getTable)
+        self.action_2.triggered.connect(self.unload_table)
+        self.action_id.triggered.connect(self.sort_byId)
+        self.action_6.triggered.connect(self.addRow)
+        self.action_7.triggered.connect(self.deleteRow)
+        self.action_4.triggered.connect(self.save)
+        self.action_8.triggered.connect(self.show_alg)
+        self.action_10.triggered.connect(self.quit)
         self.tableWidget.itemChanged.connect(self.change_item)
         self.modified = {}
         self.titles = []
@@ -289,15 +302,6 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         for row in range(self.tableWidget.rowCount()):
             self.modified["id:" + self.tableWidget.item(row, 0).text()] = str(row + 1)
             self.tableWidget.setItem(row, 0, QTableWidgetItem(str(row + 1)))
-
-    def load_changes(self):
-        if self.base_connection is None:
-            QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
-            return -1
-        cursor = self.base_connection.cursor()
-        select_changes = cursor.execute("SELECT id FROM Changes")
-        for change in select_changes:
-            self.comboBox.addItem(str(change[0]))
 
     def unload_table(self):
         if self.base_connection is None:

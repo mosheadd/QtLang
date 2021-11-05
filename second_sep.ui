@@ -269,12 +269,12 @@
      <rect>
       <x>510</x>
       <y>330</y>
-      <width>101</width>
+      <width>151</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Алгоритм слова</string>
+     <string>Морфологический анализ</string>
     </property>
    </widget>
   </widget>
@@ -287,8 +287,91 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuTable">
+    <property name="title">
+     <string>Таблица</string>
+    </property>
+    <addaction name="action"/>
+    <addaction name="action_2"/>
+    <addaction name="separator"/>
+    <addaction name="action_id"/>
+    <addaction name="action_6"/>
+    <addaction name="action_7"/>
+    <addaction name="action_4"/>
+    <addaction name="separator"/>
+    <addaction name="action_10"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Функции</string>
+    </property>
+    <addaction name="action_8"/>
+   </widget>
+   <addaction name="menuTable"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action">
+   <property name="text">
+    <string>Загрузить таблицу</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Выгрузить таблицу</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="action_id">
+   <property name="text">
+    <string>Сортировать id</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+S</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>Сохранить</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>Добавить строку</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="action_7">
+   <property name="text">
+    <string>Удалить выбранную строку</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="text">
+    <string>Морфологический анализ</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="action_10">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

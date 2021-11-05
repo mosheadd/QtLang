@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>324</width>
-    <height>382</height>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
       </font>
      </property>
      <property name="text">
-      <string>           Алгоритм слова</string>
+      <string>Морфологический анализ</string>
      </property>
     </widget>
    </item>
@@ -36,7 +36,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Язык:</string>
+        <string>Язык</string>
        </property>
       </widget>
      </item>
@@ -55,7 +55,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Слово:</string>
+        <string>Слово</string>
        </property>
       </widget>
      </item>
@@ -74,7 +74,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Корень:</string>
+        <string>Корень</string>
        </property>
       </widget>
      </item>
@@ -97,7 +97,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Приставка:</string>
+        <string>Приставка</string>
        </property>
       </widget>
      </item>
@@ -120,7 +120,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Окончание:</string>
+        <string>Окончание</string>
        </property>
       </widget>
      </item>
@@ -143,7 +143,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Суффикс:</string>
+        <string>Суффикс</string>
        </property>
       </widget>
      </item>
@@ -166,7 +166,7 @@
         </font>
        </property>
        <property name="text">
-        <string>МФА:</string>
+        <string>МФА</string>
        </property>
       </widget>
      </item>
@@ -189,12 +189,58 @@
         </font>
        </property>
        <property name="text">
-        <string>Часть речи:</string>
+        <string>Часть речи</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="lineEdit_8">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_10">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Число</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_9">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_11">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Падеж</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_10">
        <property name="enabled">
         <bool>false</bool>
        </property>
