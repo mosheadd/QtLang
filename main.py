@@ -8,6 +8,9 @@ import os
 from PyQt5.QtWidgets import QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QLabel, QApplication, QMessageBox
 
 
+ifa = {}
+
+
 class Change:
     def __init__(self, uid, body, period):
         self.uid = uid
