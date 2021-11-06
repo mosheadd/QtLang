@@ -104,7 +104,6 @@ class Language:
             pre_gap = 0
         else:
             pre_gap = len(prefix)
-        print(pre_gap, suf_gap, end_gap)
         root = word[pre_gap:len(word) - suf_gap - end_gap]
         ipa_word = "["
         for letter in word.lower():
@@ -118,11 +117,11 @@ class Algorithm(algrthm.Ui_Form, QWidget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.pushButton_7.clicked.connect(self.load_changes)
+        self.pushButton_7.clicked.connect(self.load_to_lang)
         self.pushButton_9.clicked.connect(self.apply)
         self.language = None
 
-    def load_to_lang(self, w_id, word, part, ipa, root, prefix, suffix, ending):
+    def load_to_lang(self):
         name = self.lineEdit.text()
         is_there = False
         if not name:
@@ -130,13 +129,27 @@ class Algorithm(algrthm.Ui_Form, QWidget):
             return -1
         connection = sqlite3.connect("DataBases\\" + name + ".sqlite")
         cursor = connection.cursor()
-        w_id = len(cursor.execute("SELECT * FROM Words").fetchall())
+        w_id = len(cursor.execute("SELECT * FROM Words").fetchall()) + 1
         word = self.lineEdit_3.text()
-        cursor.execute("INSERT INTO Words(id,word,partofspeech,ipa,root,prefix,suffix,ending) VALUES (?,?,?,?,?,?,?,?)",
-                       (w_id, word, part, ipa, root, prefix, suffix, ending)).fetchall()
-        if not is_there:
-            QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
-            return -1
+        part = self.lineEdit_8.text()
+        root = self.lineEdit_4.text()
+        prefix = self.lineEdit_5.text()
+        ending = self.lineEdit_6.text()
+        suffix = self.lineEdit_7.text()
+        ipa = self.lineEdit_2.text()
+        form = self.lineEdit_9.text()
+        gender = self.lineEdit_10.text()
+        cursor.execute("INSERT INTO Words(id,word,partofspeech,ipa,root,prefix,suffix,ending,gender,form) VALUES"
+                       " (?,?,?,?,?,?,?,?,?,?)", (w_id, word, part, ipa, root, prefix, suffix, ending, gender,
+                                                  form)).fetchall()
+        connection.commit()
+        self.lineEdit_4.setDisabled(True)
+        self.lineEdit_5.setDisabled(True)
+        self.lineEdit_6.setDisabled(True)
+        self.lineEdit_7.setDisabled(True)
+        self.lineEdit_2.setDisabled(True)
+        self.lineEdit_9.setDisabled(True)
+        self.lineEdit_10.setDisabled(True)
 
     def apply(self):
         name = self.lineEdit.text()
@@ -150,8 +163,7 @@ class Algorithm(algrthm.Ui_Form, QWidget):
             if not is_there:
                 QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
                 return -1
-        # morphemes = self.language.word_alg(self.lineEdit_3.text(), self.lineEdit_8.text())
-        morphemes = self.language.word_alg("морфемный", "adjective")
+        morphemes = self.language.word_alg(self.lineEdit_3.text(), self.lineEdit_8.text())
         self.lineEdit_4.setText(morphemes[0])
         self.lineEdit_5.setText(morphemes[1])
         self.lineEdit_6.setText(morphemes[3])
