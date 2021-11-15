@@ -2,6 +2,7 @@ import sys
 import fs
 import ss
 import algrthm
+import txt
 import sqlite3
 import os
 
@@ -151,6 +152,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.deleting_row = False
         self.new_table = False
         self.algorithm = None
+        self.text = None
         self.language = None
 
     def setLanguage(self):
@@ -296,6 +298,7 @@ class Russian(SecondSep):
     def __init__(self):
         super().__init__()
         self.pushButton_7.clicked.connect(self.show_alg)
+        self.pushButton_9.clicked.connect(self.show_text)
         self.base_connection = sqlite3.connect("DataBases\\Russian.sqlite")
 
     def setLanguage(self):
@@ -378,6 +381,11 @@ class Russian(SecondSep):
             self.algorithm = Algorithm()
         self.algorithm.show()
 
+    def show_text(self):
+        if not self.text:
+            self.text = Text()
+        self.text.show()
+
 
 class Algorithm(algrthm.Ui_Form, QWidget):
     def __init__(self):
@@ -430,6 +438,17 @@ class Algorithm(algrthm.Ui_Form, QWidget):
         self.lineEdit_2.setDisabled(False)
         self.lineEdit_9.setDisabled(False)
         self.lineEdit_10.setDisabled(False)
+
+
+class Text(txt.Ui_Form, QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.pushButton.clicked.connect(self.text_analysis)
+
+    def text_analysis(self):
+        text = self.lineEdit.text().split()
+        self.label_2.setText("Количество слов: " + str(len(text)))
 
 
 sys._excepthook = sys.excepthook
