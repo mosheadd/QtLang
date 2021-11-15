@@ -8,6 +8,68 @@ import os
 from PyQt5.QtWidgets import QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QLabel, QApplication, QMessageBox
 
 
+def word_alg(word, part):
+    ending = ""
+    suffix = ""
+    prefix = ""
+    gender = "Нет"
+    form = "Нет"
+    do_break = False
+    for ltr in word[::-1]:
+        ending += ltr
+        for morpheme in ex.language.morphemes:
+            if ending[::-1] == morpheme.body and morpheme._type[:6] == "ending" and morpheme.part == part:
+                ending = ending[::-1]
+                if morpheme.part in ("noun", "adjective"):
+                    gender = ex.language.endings_gender[ending][:4]
+                    form = ex.language.endings_gender[ending][5:]
+                do_break = True
+                break
+        if do_break:
+            break
+    do_break = False
+    if ending == word[::-1]:
+        ending = "Нулевое"
+        end_gap = 0
+    else:
+        end_gap = len(ending)
+    for ltr in word[-1 - end_gap::-1]:
+        suffix += ltr
+        for morpheme in ex.language.morphemes:
+            if suffix[::-1] == morpheme.body and morpheme._type == "suffix" and morpheme.part == part:
+                suffix = suffix[::-1]
+                do_break = True
+                break
+        if do_break:
+            break
+    if suffix == word[-1 - end_gap::-1]:
+        suffix = "Нет"
+        suf_gap = 0
+    else:
+        suf_gap = len(suffix)
+    do_break = False
+    for ltr in word:
+        prefix += ltr
+        for morpheme in ex.language.morphemes:
+            if prefix == morpheme.body and morpheme._type == "prefix":
+                do_break = True
+                break
+        if do_break:
+            break
+    if prefix == word:
+        prefix = "Нет"
+        pre_gap = 0
+    else:
+        pre_gap = len(prefix)
+    root = word[pre_gap:len(word) - suf_gap - end_gap]
+    ipa_word = "["
+    for letter in word.lower():
+        for k, v in ex.language.alphabet.items():
+            if k == letter:
+                ipa_word += v
+    return [root, prefix, suffix, ending, ipa_word + "]", form, gender]
+
+
 class Change:
     def __init__(self, uid, body, period):
         self.uid = uid
@@ -50,135 +112,6 @@ class Language:
         if letter[1] not in self.alphabet.keys():
             self.alphabet[letter[1]] = letter[2]
 
-    def word_alg(self, word, part):
-        ending = ""
-        suffix = ""
-        root = ""
-        prefix = ""
-        gender = "Нет"
-        form = "Нет"
-        do_break = False
-        for ltr in word[::-1]:
-            ending += ltr
-            for morpheme in self.morphemes:
-                if ending[::-1] == morpheme.body and morpheme._type[:6] == "ending" and morpheme.part == part:
-                    ending = ending[::-1]
-                    if morpheme.part in ("noun", "adjective"):
-                        gender = self.endings_gender[ending][:4]
-                        form = self.endings_gender[ending][5:]
-                    do_break = True
-                    break
-            if do_break:
-                break
-        do_break = False
-        if ending == word[::-1]:
-            ending = "Нулевое"
-            end_gap = 0
-        else:
-            end_gap = len(ending)
-        for ltr in word[-1 - end_gap::-1]:
-            suffix += ltr
-            for morpheme in self.morphemes:
-                if suffix[::-1] == morpheme.body and morpheme._type == "suffix" and morpheme.part == part:
-                    suffix = suffix[::-1]
-                    do_break = True
-                    break
-            if do_break:
-                break
-        if suffix == word[-1 - end_gap::-1]:
-            suffix = "Нет"
-            suf_gap = 0
-        else:
-            suf_gap = len(suffix)
-        do_break = False
-        for ltr in word:
-            prefix += ltr
-            for morpheme in self.morphemes:
-                if prefix == morpheme.body and morpheme._type == "prefix":
-                    do_break = True
-                    break
-            if do_break:
-                break
-        if prefix == word:
-            prefix = "Нет"
-            pre_gap = 0
-        else:
-            pre_gap = len(prefix)
-        root = word[pre_gap:len(word) - suf_gap - end_gap]
-        ipa_word = "["
-        for letter in word.lower():
-            for k, v in self.alphabet.items():
-                if k == letter:
-                    ipa_word += v
-        return [root, prefix, suffix, ending, ipa_word + "]", form, gender]
-
-
-class Algorithm(algrthm.Ui_Form, QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-        self.pushButton_7.clicked.connect(self.load_to_lang)
-        self.pushButton_9.clicked.connect(self.apply)
-        self.language = None
-
-    def load_to_lang(self):
-        name = self.lineEdit.text()
-        is_there = False
-        if not name:
-            QMessageBox.warning(self, 'Ошибка', "Вы не ввели название языка.", QMessageBox.Ok)
-            return -1
-        connection = sqlite3.connect("DataBases\\" + name + ".sqlite")
-        cursor = connection.cursor()
-        w_id = len(cursor.execute("SELECT * FROM Words").fetchall()) + 1
-        word = self.lineEdit_3.text()
-        part = self.lineEdit_8.text()
-        root = self.lineEdit_4.text()
-        prefix = self.lineEdit_5.text()
-        ending = self.lineEdit_6.text()
-        suffix = self.lineEdit_7.text()
-        ipa = self.lineEdit_2.text()
-        form = self.lineEdit_9.text()
-        gender = self.lineEdit_10.text()
-        cursor.execute("INSERT INTO Words(id,word,partofspeech,ipa,root,prefix,suffix,ending,gender,form) VALUES"
-                       " (?,?,?,?,?,?,?,?,?,?)", (w_id, word, part, ipa, root, prefix, suffix, ending, gender,
-                                                  form)).fetchall()
-        connection.commit()
-        self.lineEdit_4.setDisabled(True)
-        self.lineEdit_5.setDisabled(True)
-        self.lineEdit_6.setDisabled(True)
-        self.lineEdit_7.setDisabled(True)
-        self.lineEdit_2.setDisabled(True)
-        self.lineEdit_9.setDisabled(True)
-        self.lineEdit_10.setDisabled(True)
-
-    def apply(self):
-        name = self.lineEdit.text()
-        if not self.language:
-            is_there = False
-            for lang in languages:
-                if name == lang.name:
-                    is_there = True
-                    self.language = lang
-                    break
-            if not is_there:
-                QMessageBox.warning(self, 'Ошибка', "Язык с таким названием не найден", QMessageBox.Ok)
-                return -1
-        morphemes = self.language.word_alg(self.lineEdit_3.text(), self.lineEdit_8.text())
-        self.lineEdit_4.setText(morphemes[0])
-        self.lineEdit_5.setText(morphemes[1])
-        self.lineEdit_6.setText(morphemes[3])
-        self.lineEdit_7.setText(morphemes[2])
-        self.lineEdit_2.setText(morphemes[4])
-        self.lineEdit_9.setText(morphemes[5])
-        self.lineEdit_10.setText(morphemes[6])
-        self.lineEdit_4.setDisabled(False)
-        self.lineEdit_5.setDisabled(False)
-        self.lineEdit_6.setDisabled(False)
-        self.lineEdit_7.setDisabled(False)
-        self.lineEdit_2.setDisabled(False)
-        self.lineEdit_9.setDisabled(False)
-        self.lineEdit_10.setDisabled(False)
-
 
 class FirstSep(fs.Ui_MainWindow, QMainWindow):
     def __init__(self):
@@ -190,7 +123,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.base_connection = None
+        self.base_connection = sqlite3.connect("DataBases\\Russian.sqlite")
         self.pushButton.clicked.connect(self.deleteRow)
         self.pushButton_2.clicked.connect(self.getTable)
         self.pushButton_3.clicked.connect(lambda: self.addRow(1, [self.tableWidget.rowCount() + 1]))
@@ -216,26 +149,23 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.deleting_row = False
         self.new_table = False
         self.algorithm = None
+        self.language = None
+
+    def setLanguage(self):
+        self.language = Language("Test")
 
     def getTable(self):
-        if self.base_connection:
-            self.base_connection.close()
-        self.base_name = self.lineEdit.text()
+        self.setLanguage()
         self.table_name = self.lineEdit_2.text()
-        if not self.base_name or not self.table_name:
-            self.label_18.setText("Вы ничего не ввели в одном/двух полях")
+        if not self.table_name:
+            self.label_18.setText("Вы ничего не ввели в поле")
             return -1
-        if not os.path.isfile("DataBases\\" + self.base_name + ".sqlite"):
-            self.label_18.setText("Базы данных с таким названием нет")
-            return -1
-        self.base_connection = sqlite3.connect("DataBases\\" + self.base_name + ".sqlite")
         cursor = self.base_connection.cursor()
         cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='" + self.table_name + "'")
         if cursor.fetchone()[0] == 0:
             self.label_18.setText("Таблицы с таким названием нет")
             return -1
         self.label_18.setText("")
-        self.label_4.setText(self.base_name)
         select_table = cursor.execute("SELECT * FROM " + self.table_name)
         self.new_table = True
         self.tableWidget.setRowCount(0)
@@ -247,15 +177,12 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
             self.addRow(len(columns_names), e)
         self.new_table = False
         self.titles = [description[0] for description in cursor.description]
-        if Language(self.base_name) not in languages:
-            languages.append(Language(self.base_name))
         select_morphemes = cursor.execute("SELECT body, type, part FROM Morphemes")
         for morpheme in select_morphemes:
-            languages[-1].addMorpheme(morpheme[0], morpheme[1], morpheme[2])
+            self.language.addMorpheme(morpheme[0], morpheme[1], morpheme[2])
         select_alphabet = cursor.execute("SELECT * FROM Alphabet")
         for ltr in select_alphabet:
-            languages[-1].add_letter(ltr)
-
+            self.language.add_letter(ltr)
 
 
     def addRow(self, column_count, row_cells):
@@ -279,7 +206,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self.modified[self.titles[item.column()] + ":" + str(item.row() + 1)] = item.text()
 
     def save(self):
-        if self.base_connection is None:
+        if not self.lineEdit_2.text():
             QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
             return -1
         if self.modified:
@@ -320,11 +247,9 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 QMessageBox.Yes, QMessageBox.No)
             if deleting == QMessageBox.Yes:
                 self.deleting_row = True
-                cursor = self.base_connection.cursor()
                 current_row = self.tableWidget.currentRow()
                 self.modified["delRow"] = self.tableWidget.item(current_row, 0).text()
                 self.tableWidget.removeRow(self.tableWidget.currentRow())
-                # print(self.modified)
                 self.deleting_row = False
         else:
             QMessageBox.warning(self, 'Ошибка', "Таблица не открыта", QMessageBox.Ok)
@@ -357,10 +282,133 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
                 self.base_connection = None
             sys.exit(app.exec())
 
+
+class Russian(SecondSep):
+    def __init__(self):
+        super().__init__()
+        self.pushButton_7.clicked.connect(self.show_alg)
+
+    def setLanguage(self):
+        self.language = Language("Russian")
+
+    def word_alg(self, word, part):
+        ending = ""
+        suffix = ""
+        prefix = ""
+        gender = "Нет"
+        form = "Нет"
+        do_break = False
+        for ltr in word[::-1]:
+            ending += ltr
+            for morpheme in self.language.morphemes:
+                if ending[::-1] == morpheme.body and morpheme._type[:6] == "ending" and morpheme.part == part:
+                    ending = ending[::-1]
+                    if morpheme.part in ("noun", "adjective"):
+                        gender = self.endings_gender[ending][:4]
+                        form = self.endings_gender[ending][5:]
+                    do_break = True
+                    break
+            if do_break:
+                break
+        do_break = False
+        if ending == word[::-1]:
+            ending = "Нулевое"
+            end_gap = 0
+        else:
+            end_gap = len(ending)
+        for ltr in word[-1 - end_gap::-1]:
+            suffix += ltr
+            for morpheme in self.language.morphemes:
+                if suffix[::-1] == morpheme.body and morpheme._type == "suffix" and morpheme.part == part:
+                    suffix = suffix[::-1]
+                    do_break = True
+                    break
+            if do_break:
+                break
+        if suffix == word[-1 - end_gap::-1]:
+            suffix = "Нет"
+            suf_gap = 0
+        else:
+            suf_gap = len(suffix)
+        do_break = False
+        for ltr in word:
+            prefix += ltr
+            for morpheme in self.language.morphemes:
+                if prefix == morpheme.body and morpheme._type == "prefix":
+                    do_break = True
+                    break
+            if do_break:
+                break
+        if prefix == word:
+            prefix = "Нет"
+            pre_gap = 0
+        else:
+            pre_gap = len(prefix)
+        root = word[pre_gap:len(word) - suf_gap - end_gap]
+        ipa_word = "["
+        for letter in word.lower():
+            for k, v in self.alphabet.items():
+                if k == letter:
+                    ipa_word += v
+        return [root, prefix, suffix, ending, ipa_word + "]", form, gender]
+
     def show_alg(self):
         if not self.algorithm:
             self.algorithm = Algorithm()
         self.algorithm.show()
+
+
+class Algorithm(algrthm.Ui_Form, QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.pushButton_7.clicked.connect(self.load_to_lang)
+        self.pushButton_9.clicked.connect(self.apply)
+        self.language = None
+
+    def load_to_lang(self):
+        connection = sqlite3.connect("DataBases\\Russian.sqlite")
+        cursor = connection.cursor()
+        w_id = len(cursor.execute("SELECT * FROM Words").fetchall()) + 1
+        word = self.lineEdit_3.text()
+        part = self.lineEdit_8.text()
+        root = self.lineEdit_4.text()
+        prefix = self.lineEdit_5.text()
+        ending = self.lineEdit_6.text()
+        suffix = self.lineEdit_7.text()
+        ipa = self.lineEdit_2.text()
+        form = self.lineEdit_9.text()
+        gender = self.lineEdit_10.text()
+        cursor.execute("INSERT INTO Words(id,word,partofspeech,ipa,root,prefix,suffix,ending,gender,form) VALUES"
+                       " (?,?,?,?,?,?,?,?,?,?)", (w_id, word, part, ipa, root, prefix, suffix, ending, gender,
+                                                  form)).fetchall()
+        connection.commit()
+        self.lineEdit_4.setDisabled(True)
+        self.lineEdit_5.setDisabled(True)
+        self.lineEdit_6.setDisabled(True)
+        self.lineEdit_7.setDisabled(True)
+        self.lineEdit_2.setDisabled(True)
+        self.lineEdit_9.setDisabled(True)
+        self.lineEdit_10.setDisabled(True)
+
+    def apply(self):
+        part = self.lineEdit_8.text()
+        word = self.lineEdit_3.text()
+        morphemes = word_alg(word, part)
+        self.lineEdit_4.setText(morphemes[0])
+        self.lineEdit_5.setText(morphemes[1])
+        self.lineEdit_6.setText(morphemes[3])
+        self.lineEdit_7.setText(morphemes[2])
+        self.lineEdit_2.setText(morphemes[4])
+        self.lineEdit_9.setText(morphemes[5])
+        self.lineEdit_10.setText(morphemes[6])
+        self.lineEdit_4.setDisabled(False)
+        self.lineEdit_5.setDisabled(False)
+        self.lineEdit_6.setDisabled(False)
+        self.lineEdit_7.setDisabled(False)
+        self.lineEdit_2.setDisabled(False)
+        self.lineEdit_9.setDisabled(False)
+        self.lineEdit_10.setDisabled(False)
 
 
 sys._excepthook = sys.excepthook
@@ -375,6 +423,6 @@ languages = []
 sys.excepthook = exception_hook
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = SecondSep()
+    ex = Russian()
     ex.show()
     sys.exit(app.exec())
