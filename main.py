@@ -123,7 +123,7 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.base_connection = sqlite3.connect("DataBases\\Russian.sqlite")
+        self.base_connection = sqlite3.connect("DataBases\\Test.sqlite")
         self.pushButton.clicked.connect(self.deleteRow)
         self.pushButton_2.clicked.connect(self.getTable)
         self.pushButton_3.clicked.connect(lambda: self.addRow(1, [self.tableWidget.rowCount() + 1]))
@@ -132,12 +132,14 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
         self.pushButton_6.clicked.connect(self.unload_table)
         self.pushButton_7.clicked.connect(self.show_alg)
         self.pushButton_8.clicked.connect(self.quit)
+        self.pushButton_10.clicked.connect(self.loadLanguage)
         self.action.triggered.connect(self.getTable)
         self.action_2.triggered.connect(self.unload_table)
         self.action_id.triggered.connect(self.sort_byId)
         self.action_6.triggered.connect(self.addRow)
         self.action_7.triggered.connect(self.deleteRow)
         self.action_4.triggered.connect(self.save)
+        self.action_5.triggered.connect(self.loadLanguage)
         self.action_8.triggered.connect(self.show_alg)
         self.action_10.triggered.connect(self.quit)
         self.tableWidget.itemChanged.connect(self.change_item)
@@ -153,6 +155,13 @@ class SecondSep(ss.Ui_MainWindow, QMainWindow):
 
     def setLanguage(self):
         self.language = Language("Test")
+
+    def loadLanguage(self):
+        self.setLanguage()
+        cursor = self.base_connection.cursor()
+        select_alphabet = cursor.execute("SELECT * FROM Alphabet")
+        for ltr in select_alphabet:
+            self.language.add_letter(ltr)
 
     def getTable(self):
         self.setLanguage()
@@ -287,9 +296,21 @@ class Russian(SecondSep):
     def __init__(self):
         super().__init__()
         self.pushButton_7.clicked.connect(self.show_alg)
+        self.base_connection = sqlite3.connect("DataBases\\Russian.sqlite")
 
     def setLanguage(self):
         self.language = Language("Russian")
+
+    def loadLanguage(self):
+        self.setLanguage()
+        cursor = self.base_connection.cursor()
+        select_morphemes = cursor.execute("SELECT body, type, part FROM Morphemes")
+        for morpheme in select_morphemes:
+            self.language.addMorpheme(morpheme[0], morpheme[1], morpheme[2])
+        select_alphabet = cursor.execute("SELECT * FROM Alphabet")
+        for ltr in select_alphabet:
+            self.language.add_letter(ltr)
+
 
     def word_alg(self, word, part):
         ending = ""
