@@ -558,12 +558,6 @@ class SecondSep(Ui_MainWindow, QMainWindow):
             self.addRow(len(columns_names), e)
         self.new_table = False
         self.titles = [description[0] for description in cursor.description]
-        select_morphemes = cursor.execute("SELECT body, type, part FROM Morphemes")
-        for morpheme in select_morphemes:
-            self.language.addMorpheme(morpheme[0], morpheme[1], morpheme[2])
-        select_alphabet = cursor.execute("SELECT * FROM Alphabet")
-        for ltr in select_alphabet:
-            self.language.add_letter(ltr)
 
 
     def addRow(self, column_count, row_cells):
@@ -668,6 +662,7 @@ class Russian(SecondSep):
         self.pushButton_7.clicked.connect(self.show_alg)
         self.pushButton_9.clicked.connect(self.show_text)
         self.base_connection = sqlite3.connect("DataBases\\Russian.sqlite")
+        self.loadLanguage()
 
     def setLanguage(self):
         self.language = Language("Russian")
